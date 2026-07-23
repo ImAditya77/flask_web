@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Roadmap Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --text-color: #212529;
+            --bg-color: #f5f7fa;
+            --card-bg: white;
+        }
+
+        /* Dark Theme */
+        .theme-dark {
+            --primary-color: #7b2cbf;
+            --secondary-color: #5a189a;
+            --accent-color: #9d4edd;
+            --light-color: #343a40;
+            --dark-color: #f8f9fa;
+            --success-color: #38b000;
+            --warning-color: #ff006e;
+            --text-color: #f8f9fa;
+            --bg-color: #212529;
+            --card-bg: #343a40;
+        }
+
+        /* Nature Theme */
+        .theme-nature {
+            --primary-color: #2a9d8f;
+            --secondary-color: #264653;
+            --accent-color: #e9c46a;
+            --success-color: #2a9d8f;
+            --warning-color: #e76f51;
+            --text-color: #264653;
+            --bg-color: #f1faee;
+            --card-bg: white;
+        }
+
+        /* Sunset Theme */
+        .theme-sunset {
+            --primary-color: #ff7b00;
+            --secondary-color: #ff9500;
+            --accent-color: #ff5400;
+            --success-color: #00b4d8;
+            --warning-color: #ff006e;
+            --text-color: #03071e;
+            --bg-color: #fff0f3;
+            --card-bg: white;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .input-section,
+        .roadmap-section,
+        .modal-content {
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .input-section {
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        input[type="text"] {
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            width: 60%;
+            transition: var(--transition);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--light-color);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            filter: brightness(90%);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            filter: brightness(90%);
+        }
+
+        .roadmap-section {
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: none;
+        }
+
+        .roadmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .roadmap-content {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            max-height: 500px;
+            overflow-y: auto;
+            color: var(--text-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .rating-section {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffc107;
+        }
+
+        .loader {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        .error-message {
+            color: var(--warning-color);
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--card-bg);
+            padding: 0.5rem;
+            border-radius: 50%;
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+        }
+
+        .theme-options {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        .theme-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-option.active {
+            border-color: var(--text-color);
+        }
+
+        #default-theme {
+            background: linear-gradient(135deg, #4361ee, #4895ef);
+        }
+
+        #dark-theme {
+            background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+        }
+
+        #nature-theme {
+            background: linear-gradient(135deg, #2a9d8f, #e9c46a);
+        }
+
+        #sunset-theme {
+            background: linear-gradient(135deg, #ff7b00, #ff5400);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+
+            .input-group,
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            input[type="text"] {
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="theme-default">
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-palette" style="color: var(--primary-color);"></i>
+    </div>
+
+    <!-- Theme Options -->
+    <div class="theme-options" id="theme-options">
+        <div class="theme-option active" id="default-theme" data-theme="default"></div>
+        <div class="theme-option" id="dark-theme" data-theme="dark"></div>
+        <div class="theme-option" id="nature-theme" data-theme="nature"></div>
+        <div class="theme-option" id="sunset-theme" data-theme="sunset"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>AI Roadmap Generator</h1>
+            <p class="subtitle">Get a personalized learning path for any topic you're interested in</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <p>Enter your area of interest and we'll generate a step-by-step learning roadmap for you</p>
+                <div class="input-group">
+                    <input type="text" id="interest-input"
+                        placeholder="e.g. Machine Learning, Web Development, Digital Marketing...">
+                    <button class="btn-primary" id="generate-btn">
+                        <i class="fas fa-road"></i> Generate Roadmap
+                    </button>
+                </div>
+                <div class="loader" id="loader"></div>
+                <div class="error-message" id="error-message"></div>
+            </div>
+
+            <div class="roadmap-section" id="roadmap-section">
+                <div class="roadmap-header">
+                    <h2>Your Learning Roadmap</h2>
+                </div>
+                <div class="roadmap-content" id="roadmap-content"></div>
+                <div class="action-buttons">
+                    <button class="btn-success" id="save-btn">
+                        <i class="fas fa-save"></i> Save Roadmap
+                    </button>
+                    <button class="btn-warning" id="preview-btn">
+                        <i class="fas fa-eye"></i> Preview & Rate
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 AI Roadmap Generator | Powered by Blog_Generated AI</p>
+        </footer>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal" id="preview-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Preview & Rate Your Roadmap</h2>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div class="roadmap-content" id="modal-roadmap-content"></div>
+            <div class="rating-section">
+                <h3>How would you rate this roadmap?</h3>
+                <div class="stars">
+                    <span class="star" data-rating="1"><i class="fas fa-star"></i></span>
+                    <span class="star" data-rating="2"><i class="fas fa-star"></i></span>
+                    <span class="star" data-rating="3"><i class="fas fa-star"></i></span>
+                    <span class="star" data-rating="4"><i class="fas fa-star"></i></span>
+                    <span class="star" data-rating="5"><i class="fas fa-star"></i></span>
+                </div>
+                <button class="btn-primary" id="submit-rating">Submit Rating</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const generateBtn = document.getElementById('generate-btn');
+            const interestInput = document.getElementById('interest-input');
+            const roadmapSection = document.getElementById('roadmap-section');
+            const roadmapContent = document.getElementById('roadmap-content');
+            const saveBtn = document.getElementById('save-btn');
+            const previewBtn = document.getElementById('preview-btn');
+            const previewModal = document.getElementById('preview-modal');
+            const closeModal = document.getElementById('close-modal');
+            const modalRoadmapContent = document.getElementById('modal-roadmap-content');
+            const stars = document.querySelectorAll('.star');
+            const submitRating = document.getElementById('submit-rating');
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('error-message');
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeOptions = document.getElementById('theme-options');
+            const themeButtons = document.querySelectorAll('.theme-option');
+
+            let currentRating = 0;
+            let currentRoadmap = '';
+
+            // Theme switching functionality
+            themeToggle.addEventListener('click', function () {
+                themeOptions.style.display = themeOptions.style.display === 'flex' ? 'none' : 'flex';
+            });
+
+            themeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const theme = this.getAttribute('data-theme');
+
+                    // Update body class
+                    document.body.className = `theme-${theme}`;
+
+                    // Update active button
+                    themeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Close options
+                    themeOptions.style.display = 'none';
+
+                    // Save preference to localStorage
+                    localStorage.setItem('selectedTheme', theme);
+                });
+            });
+
+            // Load saved theme preference
+            const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+            document.body.className = `theme-${savedTheme}`;
+            document.querySelector(`[data-theme="${savedTheme}"]`).classList.add('active');
+
+            // Generate roadmap
+            generateBtn.addEventListener('click', async function () {
+                const interest = interestInput.value.trim();
+
+                if (!interest) {
+                    showError('Please enter your area of interest');
+                    return;
+                }
+
+                // Clear previous errors and show loading state
+                clearError();
+                showLoading(true);
+
+                try {
+                    const response = await fetch('/generate_roadmap', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `interest=${encodeURIComponent(interest)}`
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to generate roadmap');
+                    }
+
+                    if (data.error) {
+                        throw new Error(data.details || data.error);
+                    }
+
+                    currentRoadmap = data.roadmap;
+                    roadmapContent.textContent = currentRoadmap;
+                    roadmapSection.style.display = 'block';
+
+                    // Scroll to roadmap
+                    roadmapSection.scrollIntoView({ behavior: 'smooth' });
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    showError(error.message || 'Failed to generate roadmap. Please try again.');
+                } finally {
+                    showLoading(false);
+                }
+            });
+
+            // Save roadmap
+            saveBtn.addEventListener('click', function () {
+                if (!currentRoadmap) {
+                    showError('No roadmap to save');
+                    return;
+                }
+
+                try {
+                    const blob = new Blob([currentRoadmap], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `roadmap-${new Date().toISOString().slice(0, 10)}.txt`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    // Show success message
+                    const originalText = saveBtn.innerHTML;
+                    saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                    setTimeout(() => {
+                        saveBtn.innerHTML = originalText;
+                    }, 2000);
+                } catch (e) {
+                    showError('Failed to save roadmap');
+                    console.error(e);
+                }
+            });
+
+            // Preview roadmap
+            previewBtn.addEventListener('click', function () {
+                if (!currentRoadmap) {
+                    showError('No roadmap to preview');
+                    return;
+                }
+
+                modalRoadmapContent.textContent = currentRoadmap;
+                previewModal.style.display = 'flex';
+            });
+
+            // Close modal
+            closeModal.addEventListener('click', function () {
+                previewModal.style.display = 'none';
+            });
+
+            // Star rating
+            stars.forEach(star => {
+                star.addEventListener('click', function () {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    currentRating = rating;
+
+                    // Update star display
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Submit rating
+            submitRating.addEventListener('click', function () {
+                if (currentRating === 0) {
+                    alert('Please select a rating');
+                    return;
+                }
+
+                // In a real app, you would send this to the server
+                alert(`Thank you for your ${currentRating}-star rating!`);
+                previewModal.style.display = 'none';
+                currentRating = 0;
+
+                // Reset stars
+                stars.forEach(star => {
+                    star.classList.remove('active');
+                });
+            });
+
+            // Close modal when clicking outside
+            previewModal.addEventListener('click', function (e) {
+                if (e.target === previewModal) {
+                    previewModal.style.display = 'none';
+                }
+            });
+
+            // Close theme options when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!themeToggle.contains(e.target) && !themeOptions.contains(e.target)) {
+                    themeOptions.style.display = 'none';
+                }
+            });
+
+            // Helper functions
+            function showLoading(show) {
+                if (show) {
+                    loader.style.display = 'block';
+                    generateBtn.disabled = true;
+                    generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                } else {
+                    loader.style.display = 'none';
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<i class="fas fa-road"></i> Generate Roadmap';
+                }
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+
+            function clearError() {
+                errorMessage.textContent = '';
+                errorMessage.style.display = 'none';
+            }
+
+            // Allow pressing Enter in the input field to generate
+            interestInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    generateBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
